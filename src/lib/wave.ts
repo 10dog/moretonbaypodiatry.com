@@ -10,10 +10,7 @@ export interface WaveLayer {
   phase: number;
 }
 
-export const LAYERS: Record<'back' | 'front', WaveLayer> = {
-  back: { mid: 0.42, amp: 0.3, cycles: 1.1, speed: 0.16, phase: 1.9 },
-  front: { mid: 0.56, amp: 0.3, cycles: 1.25, speed: 0.24, phase: 0.4 },
-};
+export const WAVE: WaveLayer = { mid: 0.5, amp: 0.32, cycles: 1.25, speed: 0.24, phase: 0.4 };
 
 /** Height of the curve at `u` (0 to 1 across the width), as a fraction of the wave's height. */
 export function waveY(layer: WaveLayer, u: number, t = 0): number {

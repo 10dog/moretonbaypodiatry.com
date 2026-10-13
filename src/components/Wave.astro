@@ -1,5 +1,5 @@
 ---
-import { LAYERS, wavePath } from '../lib/wave';
+import { WAVE, wavePath } from '../lib/wave';
 
 interface Props {
   /** Turn the wave upside down, for the bottom edge of a coloured band. */
@@ -16,16 +16,14 @@ const H = 160;
 
 <div class:list={['wave', { 'wave--flip': flip, 'wave--mini': mini }]} data-wave={animate} aria-hidden="true">
   <svg viewBox={`0 0 ${W} ${H}`} preserveAspectRatio="none">
-    <path class="back" d={wavePath(LAYERS.back, W, H)}></path>
-    <path class="front" d={wavePath(LAYERS.front, W, H)}></path>
+    <path d={wavePath(WAVE, W, H)}></path>
   </svg>
   {animate && <canvas />}
 </div>
 
 <style>
   .wave {
-    --wave-back: var(--light);
-    --wave-front: var(--light-soft);
+    --wave-fill: var(--light-soft);
     position: relative;
     height: clamp(64px, 11vw, 160px);
     margin-bottom: -1px;
@@ -51,12 +49,8 @@ const H = 160;
     display: block;
   }
 
-  .back {
-    fill: var(--wave-back);
-  }
-
-  .front {
-    fill: var(--wave-front);
+  path {
+    fill: var(--wave-fill);
   }
 
   /* The static SVG is the fallback for reduced motion and no JavaScript. */
@@ -74,7 +68,7 @@ const H = 160;
 </style>
 
 <script>
-  import { LAYERS, waveY, type WaveLayer } from '../lib/wave';
+  import { WAVE, waveY } from '../lib/wave';
 
   const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
 
@@ -82,21 +76,8 @@ const H = 160;
     const canvas = el.querySelector('canvas');
     const ctx = canvas?.getContext('2d');
     if (!canvas || !ctx) return [];
-    const styles = getComputedStyle(el);
-    return [
-      {
-        el,
-        canvas,
-        ctx,
-        visible: false,
-        width: 0,
-        height: 0,
-        fills: [
-          [LAYERS.back, styles.getPropertyValue('--wave-back').trim()],
-          [LAYERS.front, styles.getPropertyValue('--wave-front').trim()],
-        ] as [WaveLayer, string][],
-      },
-    ];
+    const fill = getComputedStyle(el).getPropertyValue('--wave-fill').trim();
+    return [{ el, canvas, ctx, fill, visible: false, width: 0, height: 0 }];
   });
 
   type Wave = (typeof waves)[number];
@@ -108,17 +89,15 @@ const H = 160;
   function draw(wave: Wave) {
     const { ctx, width, height } = wave;
     ctx.clearRect(0, 0, width, height);
-    for (const [layer, fill] of wave.fills) {
-      ctx.beginPath();
-      ctx.moveTo(0, waveY(layer, 0, elapsed) * height);
-      for (let x = 6; x < width; x += 6) ctx.lineTo(x, waveY(layer, x / width, elapsed) * height);
-      ctx.lineTo(width, waveY(layer, 1, elapsed) * height);
-      ctx.lineTo(width, height);
-      ctx.lineTo(0, height);
-      ctx.closePath();
-      ctx.fillStyle = fill;
-      ctx.fill();
-    }
+    ctx.beginPath();
+    ctx.moveTo(0, waveY(WAVE, 0, elapsed) * height);
+    for (let x = 6; x < width; x += 6) ctx.lineTo(x, waveY(WAVE, x / width, elapsed) * height);
+    ctx.lineTo(width, waveY(WAVE, 1, elapsed) * height);
+    ctx.lineTo(width, height);
+    ctx.lineTo(0, height);
+    ctx.closePath();
+    ctx.fillStyle = wave.fill;
+    ctx.fill();
   }
 
   function tick(now: number) {

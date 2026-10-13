@@ -4,16 +4,14 @@ import foot from '../assets/logo_foot_256x256.png';
 
 interface Props {
   href: string;
-  /** First word or two of the title, shown in the main blue. */
-  accent: string;
   title: string;
 }
 
-const { href, accent, title } = Astro.props;
+const { href, title } = Astro.props;
 ---
 
 <a class="card" href={href}>
-  <h3><span class="accent">{accent}</span> {title}</h3>
+  <h3>{title}</h3>
   <p><slot /></p>
   <Image class="foot" src={foot} alt="" width={112} height={112} densities={[1, 2]} />
 </a>

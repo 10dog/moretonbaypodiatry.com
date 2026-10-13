@@ -9,7 +9,7 @@
   --font-body: 'Lato', system-ui, sans-serif;
 
   --wrap: 1120px;
-  --gutter: 24px;
+  --gutter: clamp(24px, 6vw, 80px);
   --radius: 12px;
   --shadow: 0 2px 12px rgb(6 50 117 / 0.08);
 }

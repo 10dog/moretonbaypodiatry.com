@@ -40,11 +40,11 @@ const referrals = [
     <div class="wrap">
       <h2 class="centre">Find out <span class="accent">more</span></h2>
       <div class="cards">
-        <Card href="#about" accent="About" title="us">Meet Becky, your local podiatrist.</Card>
-        <Card href="#referrals" accent="Referrals" title="we accept">
+        <Card href="#about" title="About us">Meet Becky, your local podiatrist.</Card>
+        <Card href="#referrals" title="Referrals we accept">
           Medicare, DVA, NDIS, Home Care Packages and private.
         </Card>
-        <Card href="#contact" accent="Contact" title="us">Book a home visit or ask a question.</Card>
+        <Card href="#contact" title="Contact us">Book a home visit or ask a question.</Card>
       </div>
     </div>
   </section>
@@ -52,7 +52,7 @@ const referrals = [
 
   <section id="about" class="section wrap about">
     <div>
-      <h2>About <span class="accent">us</span></h2>
+      <h2><span class="accent">About</span> us</h2>
       <p class="secondary">Who are we?</p>
     </div>
     <div class="prose">
@@ -91,7 +91,7 @@ const referrals = [
   </section>
 
   <section id="contact" class="section wrap contact">
-    <h2>Contact <span class="accent">us</span></h2>
+    <h2><span class="accent">Contact</span> us</h2>
     <p class="secondary">Get in touch to book a home visit.</p>
     <ul class="contact-list">
       <li>
@@ -194,6 +194,7 @@ const referrals = [
 
   .referrals p {
     margin-top: 12px;
+    font-style: italic;
   }
 
   .gp-link {
@@ -211,9 +212,9 @@ const referrals = [
   }
 
   .contact-list {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 24px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 32px clamp(40px, 8vw, 96px);
     margin: 40px 0 0;
     padding: 0;
     list-style: none;
@@ -231,7 +232,7 @@ const referrals = [
     overflow-wrap: anywhere;
   }
 
-  @media (max-width: 900px) {
+  @media (max-width: 1080px) {
     .referrals {
       grid-template-columns: repeat(2, 1fr);
     }
@@ -253,9 +254,12 @@ const referrals = [
     }
 
     .cards,
-    .about,
-    .contact-list {
+    .about {
       grid-template-columns: 1fr;
+    }
+
+    .contact-list {
+      flex-direction: column;
     }
 
     .cards {
