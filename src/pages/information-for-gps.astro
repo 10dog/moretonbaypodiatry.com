@@ -1,0 +1,60 @@
+---
+import Base from '../layouts/Base.astro';
+import { site } from '../lib/site';
+---
+
+<Base
+  title="Information for GPs | Moreton Bay Mobile Podiatry"
+  description="How to refer a patient to Moreton Bay Mobile Podiatry: referral address, provider number and accepted referral methods."
+>
+  <section class="section wrap">
+    <h1>Information for <span class="accent">GPs</span></h1>
+    <p class="secondary">Referrals should be made out to:</p>
+
+    <address>
+      <strong>{site.name}</strong>
+      {site.address.map((line) => <span>{line}</span>)}
+      <span>Provider Number <strong>{site.providerNumber}</strong></span>
+    </address>
+
+    <p class="methods">We accept referrals via Medical Objects, email, or in person.</p>
+    <p class="methods"><a href={`mailto:${site.email}`}>{site.email}</a></p>
+  </section>
+</Base>
+
+<style>
+  .section {
+    padding-top: clamp(32px, 6vw, 72px);
+  }
+
+  .secondary {
+    margin-top: 16px;
+  }
+
+  address {
+    display: grid;
+    gap: 4px;
+    width: fit-content;
+    margin-top: 32px;
+    padding: 24px 32px;
+    border-radius: var(--radius);
+    background: var(--light-soft);
+    font-size: 20px;
+    font-style: normal;
+  }
+
+  .methods {
+    max-width: 60ch;
+    margin-top: 32px;
+    font-size: 20px;
+  }
+
+  .methods + .methods {
+    margin-top: 8px;
+    font-weight: 700;
+  }
+
+  .methods a {
+    overflow-wrap: anywhere;
+  }
+</style>

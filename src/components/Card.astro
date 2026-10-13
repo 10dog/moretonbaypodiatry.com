@@ -1,0 +1,75 @@
+---
+import { Image } from 'astro:assets';
+import foot from '../assets/logo_foot_256x256.png';
+
+interface Props {
+  href: string;
+  /** First word or two of the title, shown in the main blue. */
+  accent: string;
+  title: string;
+}
+
+const { href, accent, title } = Astro.props;
+---
+
+<a class="card" href={href}>
+  <h3><span class="accent">{accent}</span> {title}</h3>
+  <p><slot /></p>
+  <Image class="foot" src={foot} alt="" width={112} height={112} densities={[1, 2]} />
+</a>
+
+<style>
+  .card {
+    position: relative;
+    display: block;
+    min-height: 240px;
+    padding: 24px 24px 96px;
+    overflow: hidden;
+    border-radius: var(--radius);
+    background: var(--white);
+    box-shadow: var(--shadow);
+    color: var(--text);
+    text-decoration: none;
+    transition:
+      transform 0.2s,
+      box-shadow 0.2s;
+  }
+
+  .card:hover {
+    color: var(--text);
+    box-shadow: 0 8px 24px rgb(6 50 117 / 0.16);
+    transform: translateY(-4px);
+  }
+
+  h3 {
+    font-size: 24px;
+  }
+
+  p {
+    margin-top: 12px;
+    font-style: italic;
+  }
+
+  .foot {
+    position: absolute;
+    right: -8px;
+    bottom: -24px;
+    width: 112px;
+  }
+
+  @media (max-width: 760px) {
+    .card {
+      min-height: 0;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .card {
+      transition: none;
+    }
+
+    .card:hover {
+      transform: none;
+    }
+  }
+</style>

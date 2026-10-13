@@ -1,0 +1,80 @@
+---
+import { Image } from 'astro:assets';
+import logo from '../assets/full_logo_656x120.png';
+import { href, site } from '../lib/site';
+
+const links = [
+  { label: 'About', path: '/#about' },
+  { label: 'Referrals', path: '/#referrals' },
+  { label: 'Contact', path: '/#contact' },
+  { label: 'For GPs', path: '/information-for-gps/' },
+];
+---
+
+<header class="header">
+  <div class="wrap inner">
+    <a class="logo" href={href('/')}>
+      <Image src={logo} alt={site.name} width={328} height={60} densities={[1, 2]} loading="eager" />
+    </a>
+    <nav aria-label="Main">
+      <ul>
+        {
+          links.map((link) => (
+            <li>
+              <a href={href(link.path)}>{link.label}</a>
+            </li>
+          ))
+        }
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<style>
+  .inner {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px 32px;
+    padding-block: 24px;
+  }
+
+  .logo img {
+    width: clamp(220px, 30vw, 328px);
+  }
+
+  ul {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px 32px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  a {
+    font-weight: 700;
+    text-decoration: none;
+  }
+
+  nav a {
+    display: inline-block;
+    padding-block: 8px;
+  }
+
+  nav a:hover {
+    text-decoration: underline;
+  }
+
+  @media (max-width: 640px) {
+    .inner {
+      justify-content: center;
+    }
+
+    ul {
+      justify-content: center;
+      gap: 0 24px;
+    }
+  }
+</style>

@@ -1,0 +1,275 @@
+---
+import { Image } from 'astro:assets';
+import foot from '../assets/logo_foot_256x256.png';
+import Base from '../layouts/Base.astro';
+import Card from '../components/Card.astro';
+import Wave from '../components/Wave.astro';
+import { href, site } from '../lib/site';
+
+const referrals = [
+  {
+    title: 'GP referrals',
+    text: 'We accept Medicare EPC / Individual Allied Health referrals, as well as DVA referrals.',
+  },
+  { title: 'NDIS', text: 'We accept self managed NDIS clients.' },
+  { title: 'Home Care Packages', text: 'We accept referrals for Home Care Package clients.' },
+  { title: 'Private', text: 'We accept private clients.' },
+];
+---
+
+<Base
+  title="Moreton Bay Mobile Podiatry | Home Visit Podiatry | Moreton Bay, QLD"
+  description="Friendly and professional home visit podiatry in the Moreton Bay region, from the comfort of your own home."
+>
+  <section class="hero wrap">
+    <Image class="hero-foot" src={foot} alt="" width={256} height={256} loading="eager" />
+    <div class="hero-text">
+      <h1>Step forward with <span class="accent">mobile</span> podiatry</h1>
+      <p class="secondary">
+        Friendly and professional podiatry services from the comfort of your own home.
+      </p>
+      <div class="actions">
+        <a class="btn" href={site.phoneHref}>Call {site.phone}</a>
+        <a class="btn btn--outline" href={`mailto:${site.email}`}>Email us</a>
+      </div>
+    </div>
+  </section>
+
+  <Wave />
+  <section class="band">
+    <div class="wrap">
+      <h2 class="centre">Find out <span class="accent">more</span></h2>
+      <div class="cards">
+        <Card href="#about" accent="About" title="us">Meet Becky, your local podiatrist.</Card>
+        <Card href="#referrals" accent="Referrals" title="we accept">
+          Medicare, DVA, NDIS, Home Care Packages and private.
+        </Card>
+        <Card href="#contact" accent="Contact" title="us">Book a home visit or ask a question.</Card>
+      </div>
+    </div>
+  </section>
+  <Wave flip />
+
+  <section id="about" class="section wrap about">
+    <div>
+      <h2>About <span class="accent">us</span></h2>
+      <p class="secondary">Who are we?</p>
+    </div>
+    <div class="prose">
+      <p>
+        Podiatrist and owner, Becky has over 9 years experience in Aged Care Podiatry. Her passion
+        is keeping your feet healthy and comfortable so that you can continue doing the things that
+        you love!
+      </p>
+      <p>
+        Specialising in home visits for the over 60's, our service is fully mobile. We bring
+        everything we need for a comprehensive, hygienic and high quality podiatry assessment and
+        treatment.
+      </p>
+      <p>
+        AHPRA registered and fully insured, you can be assured you are receiving the highest quality
+        care.
+      </p>
+    </div>
+  </section>
+
+  <section id="referrals" class="section wrap">
+    <h2><span class="accent">Referrals</span> we accept</h2>
+    <ul class="referrals">
+      {
+        referrals.map((item) => (
+          <li>
+            <h3>{item.title}</h3>
+            <p>{item.text}</p>
+          </li>
+        ))
+      }
+    </ul>
+    <p class="gp-link">
+      Are you a GP? <a href={href('/information-for-gps/')}>See how to refer a patient</a>.
+    </p>
+  </section>
+
+  <section id="contact" class="section wrap contact">
+    <h2>Contact <span class="accent">us</span></h2>
+    <p class="secondary">Get in touch to book a home visit.</p>
+    <ul class="contact-list">
+      <li>
+        <h3>Telephone</h3>
+        <a href={site.phoneHref}>{site.phone}</a>
+      </li>
+      <li>
+        <h3>Email</h3>
+        <a href={`mailto:${site.email}`}>{site.email}</a>
+      </li>
+      <li>
+        <h3>Facebook</h3>
+        <a href={site.facebook} rel="noopener">Find us on Facebook</a>
+      </li>
+    </ul>
+  </section>
+</Base>
+
+<style>
+  .hero {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    align-items: center;
+    gap: clamp(32px, 7vw, 96px);
+    padding-block: clamp(32px, 7vw, 88px) clamp(24px, 4vw, 48px);
+  }
+
+  .hero-foot {
+    width: clamp(140px, 22vw, 256px);
+    margin-left: clamp(0px, 6vw, 96px);
+  }
+
+  .hero-text {
+    max-width: 560px;
+  }
+
+  .hero .secondary {
+    margin-top: 16px;
+  }
+
+  .actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+    margin-top: 32px;
+  }
+
+  .band {
+    padding-block: clamp(24px, 4vw, 48px) clamp(32px, 5vw, 56px);
+    background: var(--light-soft);
+  }
+
+  .centre {
+    text-align: center;
+  }
+
+  .cards {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 32px;
+    max-width: 960px;
+    margin: 48px auto 0;
+  }
+
+  .about {
+    display: grid;
+    grid-template-columns: 1fr 1.6fr;
+    gap: 32px 64px;
+  }
+
+  .about .secondary {
+    margin-top: 8px;
+  }
+
+  .prose {
+    display: grid;
+    gap: 16px;
+    max-width: 65ch;
+    font-size: 20px;
+  }
+
+  .referrals {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 24px;
+    margin: 40px 0 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .referrals li {
+    padding: 24px;
+    border-radius: var(--radius);
+    background: var(--light-soft);
+  }
+
+  .referrals h3 {
+    font-size: 24px;
+  }
+
+  .referrals p {
+    margin-top: 12px;
+  }
+
+  .gp-link {
+    margin-top: 32px;
+    font-size: 20px;
+    font-weight: 700;
+  }
+
+  .contact {
+    padding-top: 0;
+  }
+
+  .contact .secondary {
+    margin-top: 8px;
+  }
+
+  .contact-list {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+    margin: 40px 0 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .contact-list h3 {
+    font-size: 24px;
+  }
+
+  .contact-list a {
+    display: inline-block;
+    margin-top: 8px;
+    font-size: 20px;
+    font-weight: 700;
+    overflow-wrap: anywhere;
+  }
+
+  @media (max-width: 900px) {
+    .referrals {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  @media (max-width: 760px) {
+    .hero {
+      grid-template-columns: 1fr;
+      justify-items: center;
+      text-align: center;
+    }
+
+    .hero-foot {
+      margin-left: 0;
+    }
+
+    .actions {
+      justify-content: center;
+    }
+
+    .cards,
+    .about,
+    .contact-list {
+      grid-template-columns: 1fr;
+    }
+
+    .cards {
+      max-width: 420px;
+    }
+  }
+
+  @media (max-width: 520px) {
+    .referrals {
+      grid-template-columns: 1fr;
+    }
+
+    .actions .btn {
+      width: 100%;
+    }
+  }
+</style>

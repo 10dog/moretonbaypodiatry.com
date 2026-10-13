@@ -1,0 +1,57 @@
+---
+import { Image } from 'astro:assets';
+import logo from '../assets/full_logo_656x120.png';
+import Wave from './Wave.astro';
+import { site } from '../lib/site';
+
+const year = new Date().getFullYear();
+---
+
+<Wave />
+<footer class="footer">
+  <div class="wrap inner">
+    <div>
+      <Image src={logo} alt={site.name} width={246} height={45} densities={[1, 2]} />
+      <p class="note">AHPRA registered and fully insured.</p>
+    </div>
+    <ul>
+      <li><a href={site.phoneHref}>{site.phone}</a></li>
+      <li><a href={`mailto:${site.email}`}>{site.email}</a></li>
+      <li><a href={site.facebook} rel="noopener">Facebook</a></li>
+    </ul>
+  </div>
+  <p class="wrap copyright">© {year} {site.name}</p>
+</footer>
+
+<style>
+  .footer {
+    padding-block: 24px 40px;
+    background: var(--light-soft);
+  }
+
+  .inner {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 32px;
+  }
+
+  .note {
+    margin-top: 16px;
+  }
+
+  ul {
+    display: grid;
+    gap: 8px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    font-weight: 700;
+  }
+
+  .copyright {
+    margin-top: 40px;
+    font-size: 16px;
+  }
+</style>

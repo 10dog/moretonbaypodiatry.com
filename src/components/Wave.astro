@@ -1,0 +1,169 @@
+---
+import { LAYERS, wavePath } from '../lib/wave';
+
+interface Props {
+  /** Turn the wave upside down, for the bottom edge of a coloured band. */
+  flip?: boolean;
+  /** Short version for cards and small areas. */
+  mini?: boolean;
+  animate?: boolean;
+}
+
+const { flip = false, mini = false, animate = true } = Astro.props;
+const W = 1440;
+const H = 160;
+---
+
+<div class:list={['wave', { 'wave--flip': flip, 'wave--mini': mini }]} data-wave={animate} aria-hidden="true">
+  <svg viewBox={`0 0 ${W} ${H}`} preserveAspectRatio="none">
+    <path class="back" d={wavePath(LAYERS.back, W, H)}></path>
+    <path class="front" d={wavePath(LAYERS.front, W, H)}></path>
+  </svg>
+  {animate && <canvas />}
+</div>
+
+<style>
+  .wave {
+    --wave-back: var(--light);
+    --wave-front: var(--light-soft);
+    position: relative;
+    height: clamp(64px, 11vw, 160px);
+    margin-bottom: -1px;
+    pointer-events: none;
+  }
+
+  .wave--flip {
+    transform: rotate(180deg);
+    margin-top: -1px;
+    margin-bottom: 0;
+  }
+
+  .wave--mini {
+    height: 40px;
+  }
+
+  svg,
+  canvas {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    display: block;
+  }
+
+  .back {
+    fill: var(--wave-back);
+  }
+
+  .front {
+    fill: var(--wave-front);
+  }
+
+  /* The static SVG is the fallback for reduced motion and no JavaScript. */
+  canvas {
+    display: none;
+  }
+
+  .wave.is-live svg {
+    visibility: hidden;
+  }
+
+  .wave.is-live canvas {
+    display: block;
+  }
+</style>
+
+<script>
+  import { LAYERS, waveY, type WaveLayer } from '../lib/wave';
+
+  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+
+  const waves = [...document.querySelectorAll<HTMLElement>('[data-wave]')].flatMap((el) => {
+    const canvas = el.querySelector('canvas');
+    const ctx = canvas?.getContext('2d');
+    if (!canvas || !ctx) return [];
+    const styles = getComputedStyle(el);
+    return [
+      {
+        el,
+        canvas,
+        ctx,
+        visible: false,
+        width: 0,
+        height: 0,
+        fills: [
+          [LAYERS.back, styles.getPropertyValue('--wave-back').trim()],
+          [LAYERS.front, styles.getPropertyValue('--wave-front').trim()],
+        ] as [WaveLayer, string][],
+      },
+    ];
+  });
+
+  type Wave = (typeof waves)[number];
+
+  let elapsed = 0;
+  let last = 0;
+  let frame = 0;
+
+  function draw(wave: Wave) {
+    const { ctx, width, height } = wave;
+    ctx.clearRect(0, 0, width, height);
+    for (const [layer, fill] of wave.fills) {
+      ctx.beginPath();
+      ctx.moveTo(0, waveY(layer, 0, elapsed) * height);
+      for (let x = 6; x < width; x += 6) ctx.lineTo(x, waveY(layer, x / width, elapsed) * height);
+      ctx.lineTo(width, waveY(layer, 1, elapsed) * height);
+      ctx.lineTo(width, height);
+      ctx.lineTo(0, height);
+      ctx.closePath();
+      ctx.fillStyle = fill;
+      ctx.fill();
+    }
+  }
+
+  function tick(now: number) {
+    // Cap the step so the wave doesn't jump after the tab has been in the background.
+    elapsed += last ? Math.min((now - last) / 1000, 0.05) : 0;
+    last = now;
+    for (const wave of waves) if (wave.visible) draw(wave);
+    frame = requestAnimationFrame(tick);
+  }
+
+  function update() {
+    cancelAnimationFrame(frame);
+    last = 0;
+    for (const wave of waves) wave.el.classList.toggle('is-live', !reduceMotion.matches);
+    if (reduceMotion.matches || document.hidden || !waves.some((wave) => wave.visible)) return;
+    frame = requestAnimationFrame(tick);
+  }
+
+  const resizer = new ResizeObserver((entries) => {
+    for (const entry of entries) {
+      const wave = waves.find((w) => w.el === entry.target);
+      if (!wave) continue;
+      const ratio = Math.min(window.devicePixelRatio || 1, 2);
+      wave.width = wave.el.clientWidth;
+      wave.height = wave.el.clientHeight;
+      wave.canvas.width = Math.max(1, Math.round(wave.width * ratio));
+      wave.canvas.height = Math.max(1, Math.round(wave.height * ratio));
+      wave.ctx.setTransform(ratio, 0, 0, ratio, 0, 0);
+      draw(wave);
+    }
+  });
+
+  const watcher = new IntersectionObserver((entries) => {
+    for (const entry of entries) {
+      const wave = waves.find((w) => w.el === entry.target);
+      if (wave) wave.visible = entry.isIntersecting;
+    }
+    update();
+  });
+
+  for (const wave of waves) {
+    resizer.observe(wave.el);
+    watcher.observe(wave.el);
+  }
+
+  document.addEventListener('visibilitychange', update);
+  reduceMotion.addEventListener('change', update);
+</script>
